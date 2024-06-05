@@ -1,0 +1,24 @@
+server:
+  port: 8100
+domain: 
+  aastockAuth: http://www.aastocks.com/tc/resources/datafeed/getcetoken.ashx 
+  
+spring:
+  datasource:
+    #driverClassName: "org.hibernate.dialect.PostgreSQLDialect"
+    driverClassName: org.postgresql.Driver
+    #url: "jdbc:postgresql://localhost:5432/${database.postgres}"
+    url: jdbc:postgresql://localhost:5432/wingon_pbs_data
+    username: postgres
+    password: admin1234
+  jpa:
+    #properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDiale
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update # update / create  or create-drop if you want to drop the tables on application shutdown
+aastock:
+  url: http://fctdata.aastocks.com/g2ce/Quote/getQuote?format=json
+  referer: http://www.aastocks.com/
+  #referer: http://www.aastocks.com/tc/usq/default.aspx
+  auth: XuVN0DV38xBeIWtlSyY36j7MKBsfCPoYBsWp5H7RkO2GqTppvQ9Z5kx9YusYJv7F3serMCn0zR2GcVPnYWKYXhlU11ua9My1k+nogT/8zeqvTjv51upi/jRLq63YGXX7Q088tSPr5xbqNX8igbiq6CvzyXcPj35pObD5sDYD1bgyYQitjCn/rF6rO6ItNPwejHJZ4ZYjGuwVvVgBpOlWKZQv3g6tNduSiYXyZTE6yh1ICM5FBzbvzhAWcP9fnD7IRIYjjy+gB7Y52XVLK6Q/uMCdBswYIOwuM/MO5EDYfb3+gesdnPgCpn/v5lFl5g2la84QgIZKS5cDOSfKjEUECQ==
