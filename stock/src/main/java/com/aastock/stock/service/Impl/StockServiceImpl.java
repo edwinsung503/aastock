@@ -1,5 +1,7 @@
 package com.aastock.stock.service.Impl;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -12,9 +14,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import com.aastock.stock.dto.response.StockDTO;
+import com.aastock.stock.service.GetAuthKeyService;
 import com.aastock.stock.service.StockService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -23,6 +30,9 @@ public class StockServiceImpl implements StockService {
 
   @Autowired
   private RestTemplate restTemplate;
+
+  @Autowired
+  private GetAuthKeyService getAuthKeyService;
 
   @Value(value = "${domain.aastockAuth}")
   private String aastock;
@@ -39,38 +49,36 @@ public class StockServiceImpl implements StockService {
   @Override
   public StockDTO getStocks(List<String> stockId){
     HttpHeaders headers= creaHttpHeaders();
-    HttpEntity<String> entity = new HttpEntity<>("",headers);
+    HttpEntity<String> entity = new HttpEntity<>(null,headers);
     ResponseEntity<String> response;
     try {
       response = restTemplate.exchange(aastock, HttpMethod.GET, entity, String.class);
     } catch (Exception e) {
-      logger.error("Error fetching stock data", e);
+      //logger.error("Error fetching stock data", e);
       throw new RuntimeException("Error fetching stock data", e);
     }
     String responseBody = response.getBody();
-    logger.info("Response from aastock: {}", responseBody);
+    
+    //logger.info("Response from aastock: {}", responseBody);
 
     List<String> stockList = stockId.stream()
                                     .map(StockServiceImpl::formatElement)
                                     .collect(Collectors.toList());
-        
-    logger.info("Formatted stock list: {}", stockList);
+    //logger.info("Formatted stock list: {}", stockList);
 
-    String result = String.join("%2C", stockList);
-    logger.info("Concatenated stock list: {}", result);
-
-    String finalUrl = String.format("%s%s&grp0=%s%%7C127%%2C59%%2C29%%7CF%%3DY", url, responseBody, result);
-    logger.info("Final URL: {}", finalUrl);
+    String result = String.join(",", stockList);
+    //logger.info("Concatenated stock list: {}", result);
+    String finalUrl = String.format("%s%s&grp0=%s|127,76,40,6|F=Y",
+            url, responseBody, result);
 
     StockDTO stockDTO;
     try {
-      ResponseEntity<String> rawResponse = restTemplate.getForEntity(finalUrl, String.class);
-      logger.info("Raw response from final URL: {}", rawResponse.getBody());
-
-      stockDTO = restTemplate.getForObject(finalUrl, StockDTO.class);
-      logger.info("Deserialized StockDTO: {}", stockDTO);
-    } catch (Exception e) {
-        logger.error("Error fetching stock DTO", e);
+      HttpEntity<String> entity2 = new HttpEntity<>("", headers);
+      ResponseEntity<StockDTO> rawResponse = restTemplate.exchange(finalUrl, HttpMethod.GET, entity2, StockDTO.class);
+      stockDTO = rawResponse.getBody();
+      //logger.info("Deserialized StockDTO: {}", stockDTO.toString());
+    } catch (HttpClientErrorException | ResourceAccessException e) {
+        //logger.error("Error fetching stock DTO", e);
         throw new RuntimeException("Error fetching stock DTO", e);
     }
     return stockDTO;
@@ -78,9 +86,13 @@ public class StockServiceImpl implements StockService {
 
   private HttpHeaders creaHttpHeaders(){
     HttpHeaders headers = new HttpHeaders();
+    String authToken = getAuthKeyService.getAuthKey();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.set(HttpHeaders.REFERER,referer);
-    headers.set("Auth","Bearer ".concat(auth));
+    headers.set("Auth","Bearer ".concat(authToken));
+    //headers.set(HttpHeaders.HOST,"fctdata.aastocks.com");
+    //headers.set(HttpHeaders.COOKIE,"aa_cookie=58.153.74.223_54720_1717728793");
+    //headers.add(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
     return headers;
   }
   

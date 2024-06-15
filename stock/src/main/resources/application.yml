@@ -21,4 +21,5 @@ aastock:
   url: http://fctdata.aastocks.com/g2ce/Quote/getQuote?format=json
   referer: http://www.aastocks.com/
   #referer: http://www.aastocks.com/tc/usq/default.aspx
-  auth: XuVN0DV38xBeIWtlSyY36j7MKBsfCPoYBsWp5H7RkO2GqTppvQ9Z5kx9YusYJv7F3serMCn0zR2GcVPnYWKYXhlU11ua9My1k+nogT/8zeqvTjv51upi/jRLq63YGXX7Q088tSPr5xbqNX8igbiq6CvzyXcPj35pObD5sDYD1bgyYQitjCn/rF6rO6ItNPwejHJZ4ZYjGuwVvVgBpOlWKZQv3g6tNduSiYXyZTE6yh1ICM5FBzbvzhAWcP9fnD7IRIYjjy+gB7Y52XVLK6Q/uMCdBswYIOwuM/MO5EDYfb3+gesdnPgCpn/v5lFl5g2la84QgIZKS5cDOSfKjEUECQ==
+  auth: gC0PS6Fvshs9oUFAv/NT9CCgXpbvsUGVWI3JBR9tPIec0x6qqWGgNGbIgLQ1ZZAo8AXkVr390ox/QdGXJ6dHqI9Z3HCDsiyMzFu7ZhpBUnmr5UPeFmO3bPQ8oQ8dongrMJa8FFUIGKhtjN/mI3xBOIL+VkVNN3kW3QLCsmbezppm/q0JDuuV9o2mWWXtjCACyaDkxohirAaxuwHDsVUmCXigiYU9eLFY8QScsL3l031LHqkWv8fuMlr3cdAbOLbN3ClJ6C9xC+X5NpxeAGG4hpCfXllY7eua1jbJo6ZgA/sGuO2AbbKm2hn1zlme7NJGnkH4F35z9FdXQkbEiJce+Q==
+  authUrl: http://www.aastocks.com/tc/resources/datafeed/getapitoken.ashx?PageURL=http%3A%2F%2Fwww.aastocks.com%2F&HKT=Y&UST=Y
