@@ -5,5 +5,5 @@ import com.aastock.stock.dto.response.StockDTO;
 
 public interface StockService {
 
-  StockDTO getStocks(List<String> stockId);
+  String getStocks(List<String> stockId);
 }

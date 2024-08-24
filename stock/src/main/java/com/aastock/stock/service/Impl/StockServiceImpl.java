@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import com.aastock.stock.dto.mapper.StockMapper;
 import com.aastock.stock.dto.response.StockDTO;
 import com.aastock.stock.service.GetAuthKeyService;
 import com.aastock.stock.service.StockService;
@@ -47,7 +48,7 @@ public class StockServiceImpl implements StockService {
   private String referer;
   
   @Override
-  public StockDTO getStocks(List<String> stockId){
+  public String getStocks(List<String> stockId){
     HttpHeaders headers= creaHttpHeaders();
     HttpEntity<String> entity = new HttpEntity<>(null,headers);
     ResponseEntity<String> response;
@@ -68,8 +69,7 @@ public class StockServiceImpl implements StockService {
 
     String result = String.join(",", stockList);
     //logger.info("Concatenated stock list: {}", result);
-    String finalUrl = String.format("%s%s&grp0=%s|127,76,40,6|F=Y",
-            url, responseBody, result);
+    String finalUrl = String.format("%s%s&grp0=%s|127,76,40,6|F=Y",url, responseBody, result);
 
     StockDTO stockDTO;
     try {
@@ -81,7 +81,20 @@ public class StockServiceImpl implements StockService {
         //logger.error("Error fetching stock DTO", e);
         throw new RuntimeException("Error fetching stock DTO", e);
     }
-    return stockDTO;
+
+    String formattedStockData = "" ;
+    if (stockDTO != null && stockDTO.getRoot() != null) {
+      List<StockDTO.Stock> stocks = stockDTO.getRoot().getGp().get(0).getStock();
+      formattedStockData = stocks.stream()
+          .map(stock -> StockMapper.mapToStockString(
+              stock.getS0(), stock.getS1(), stock.getR0(),
+              stock.getR1(), stock.getR2(), stock.getR3(),
+              stock.getR4(), stock.getR5(), stock.getR6(),
+              stock.getR7()))
+          .collect(Collectors.joining("\n\n"));
+
+    }
+    return formattedStockData;
   }
 
   private HttpHeaders creaHttpHeaders(){

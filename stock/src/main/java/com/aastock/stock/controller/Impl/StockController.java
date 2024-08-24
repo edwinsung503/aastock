@@ -39,8 +39,8 @@ public class StockController implements StockOperation{
     }
 
     @Override
-    public ResponseEntity<StockDTO> getStocks(List<String> stockId){
-      StockDTO stockDTO = stockService.getStocks(stockId);
+    public ResponseEntity<String> getStocks(List<String> stockId){
+      String stockDTO = stockService.getStocks(stockId);
       //return new ResponseEntity<String>("Stock Price get successfully", HttpStatus.CREATED);
       return ResponseEntity.ok()
               .contentType(MediaType.APPLICATION_JSON)

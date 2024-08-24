@@ -17,5 +17,5 @@ public interface StockOperation {
 
   //http://localhost:8100/aastock/stockprice/api/v1/get/stocks?
   @GetMapping(value = "/get/stocks")
-  ResponseEntity<StockDTO> getStocks(@RequestParam(value="stockId") List<String> stockId);
+  ResponseEntity<String> getStocks(@RequestParam(value="stockId") List<String> stockId);
 }
